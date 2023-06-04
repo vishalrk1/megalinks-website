@@ -10,8 +10,8 @@ import { firestore, convertCollectionsSnapshotToMap } from './firebase/firebase.
 import { updateCategories } from './redux/category-items/category-items.actions';
 import Footer from './components/footer/footer.component';
 
-
 class App extends React.Component {
+
 
   componentDidMount(){
     const { updateCategories } = this.props;
@@ -20,7 +20,7 @@ class App extends React.Component {
     collectionRef.onSnapshot(snapshot => {
       const collectionMap = convertCollectionsSnapshotToMap(snapshot);
       updateCategories(collectionMap);
-      console.log(collectionMap);
+      this.setState({ loading: false})
     });
 
   }

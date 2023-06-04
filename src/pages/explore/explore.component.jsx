@@ -3,7 +3,7 @@ import { Route } from "react-router-dom";
 import { connect } from "react-redux";
 import './explore.styles.scss';
 
-import CategoryPage from "../category/category.component";
+import CategoryPage from "../packs-preview-page/packs-preview-page.component";
 import CategoryOverviewPage from "../category-overview/category-overview.component";
 import { selectAllCatogries } from "../../redux/category-items/category-items.selector";
 import { getAllCategoryData } from "../../firebase/firebase.utils";
@@ -29,12 +29,12 @@ class ExplorePage extends React.Component {
     }
 
     render (){
-        const { match } = this.props;
+        const { categories, match } = this.props;
         const { loading } = this.state;
 
         return (
             <div className="explore">
-                <Route exact path={`${match.path}`} render={(props) => <CategoryPageWithSpinner isLoading={loading} {...props}/>} />
+                <Route exact path={`${match.path}`} render={(props) => <CategoryPageWithSpinner categories={categories.map(({routName}) => routName)} isLoading={loading} {...props}/>} />
                 <Route path={`${match.path}/:collectionId`} render={(props) => <CategoryOverviewPageWithSpinner isLoading={loading} {...props}/>} />
             </div>
         );
