@@ -1,25 +1,47 @@
-import logo from './logo.svg';
+import React from 'react';
+import { Route, Switch } from 'react-router-dom';
+import { connect } from 'react-redux';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import Header from './components/header/header.component';
+import HomePage from './pages/homepage/homepage.component';
+import ExplorePage from './pages/explore/explore.component';
+import { firestore, convertCollectionsSnapshotToMap } from './firebase/firebase.utils';
+import { updateCategories } from './redux/category-items/category-items.actions';
+import Footer from './components/footer/footer.component';
+
+
+class App extends React.Component {
+
+  componentDidMount(){
+    const { updateCategories } = this.props;
+    const collectionRef = firestore.collection('categoryId');
+
+    collectionRef.onSnapshot(snapshot => {
+      const collectionMap = convertCollectionsSnapshotToMap(snapshot);
+      updateCategories(collectionMap);
+      console.log(collectionMap);
+    });
+
+  }
+
+  render() {
+    return (
+      <div className="App">
+        <Header />
+        {/* <HomePageImage /> */}
+        <Switch >
+          <Route exact path='/' component={HomePage} />
+          <Route path='/explore' component={ExplorePage}/>          
+        </Switch>
+        <Footer />
+      </div>
+    );
+  }
 }
 
-export default App;
+const mapDispatchToProps = (dispatch) =>({
+  updateCategories: collectionMap => dispatch(updateCategories(collectionMap))
+});
+
+export default connect(null, mapDispatchToProps)(App);
